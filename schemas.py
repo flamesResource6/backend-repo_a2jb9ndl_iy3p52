@@ -11,8 +11,8 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, HttpUrl
+from typing import Optional, List
 
 # Example schemas (replace with your own):
 
@@ -38,8 +38,31 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# Portfolio-specific schemas
+
+class Project(BaseModel):
+    """
+    Portfolio projects shown on the website
+    Collection name: "project"
+    """
+    title: str = Field(..., description="Project title")
+    description: str = Field(..., description="Short description of the project")
+    tags: List[str] = Field(default_factory=list, description="Tech stack or categories")
+    image_url: Optional[HttpUrl] = Field(None, description="Cover image URL")
+    live_url: Optional[HttpUrl] = Field(None, description="Live site URL")
+    repo_url: Optional[HttpUrl] = Field(None, description="Source repository URL")
+    year: Optional[int] = Field(None, description="Year of completion")
+
+class ContactMessage(BaseModel):
+    """
+    Messages sent from the contact form
+    Collection name: "contactmessage"
+    """
+    name: str = Field(..., description="Sender name")
+    email: str = Field(..., description="Sender email")
+    message: str = Field(..., description="Message body")
+    budget: Optional[str] = Field(None, description="Estimated budget range")
+    timeline: Optional[str] = Field(None, description="Desired timeline")
 
 # Note: The Flames database viewer will automatically:
 # 1. Read these schemas from GET /schema endpoint
